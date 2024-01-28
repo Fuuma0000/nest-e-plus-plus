@@ -1,0 +1,317 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Bookmark {
+  id      Int @id @default(autoincrement()) @db.UnsignedInt
+  work_id Int @db.UnsignedInt
+  user_id Int @db.UnsignedInt
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  works Work @relation(fields: [work_id], references: [id])
+  users User @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@index([work_id])
+}
+
+model Course {
+  id   Int    @id @default(autoincrement()) @db.UnsignedInt
+  name String @db.VarChar(30)
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  users User[]
+}
+
+model Event {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  name        String    @db.VarChar(50)
+  start_at    DateTime? @db.DateTime(0)
+  end_at      DateTime? @db.DateTime(0)
+  icon_url    String?   @db.VarChar(255)
+  description String?   @db.Text
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  event_user_roles Event_user_role[]
+  works            Work[]
+}
+
+model Genre {
+  id   Int    @id @default(autoincrement()) @db.UnsignedInt
+  name String @db.VarChar(30)
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  work_data_genres Work_data_genre[]
+}
+
+model Job {
+  id   Int    @id @default(autoincrement()) @db.UnsignedInt
+  name String @db.VarChar(30)
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  user_jobs User_job[]
+}
+
+model Role {
+  id   Int    @id @default(autoincrement()) @db.UnsignedInt
+  name String @db.VarChar(30)
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  event_user_roles Event_user_role[]
+}
+
+model Technology {
+  id   Int    @id @default(autoincrement()) @db.UnsignedInt
+  name String @db.VarChar(30)
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  work_data_technologies Work_data_technology[]
+}
+
+model User {
+  id                    Int      @id @default(autoincrement()) @db.UnsignedInt
+  email                 String   @unique(map: "email") @db.VarChar(255)
+  password              String   @db.VarChar(255)
+  salt                  String   @db.VarChar(255)
+  username              String?  @db.VarChar(50)
+  courses_id            Int?     @db.UnsignedInt
+  enrollment_year       Int?
+  graduation_year       Int?
+  is_job_hunt_completed Boolean? @default(false)
+  self_introduction     String?  @db.Text
+  icon_url              String?  @db.VarChar(255)
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  bookmarks        Bookmark[]
+  event_uses_roles Event_user_role[]
+  courses          Course?           @relation(fields: [courses_id], references: [id])
+  user_jobs        User_job[]
+  user_urls        User_url[]
+  work_data_users  Work_data_user[]
+
+  @@index([courses_id])
+}
+
+model User_job {
+  user_id Int @db.UnsignedInt
+  job_id  Int @db.UnsignedInt
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  users User @relation(fields: [user_id], references: [id])
+  jobs  Job  @relation(fields: [job_id], references: [id])
+
+  @@id([user_id, job_id])
+  @@index([job_id])
+  @@index([user_id])
+}
+
+model User_url {
+  id       Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id  Int    @db.UnsignedInt
+  url_name String @db.VarChar(30)
+  url      String @db.VarChar(255)
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  users User @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+}
+
+model Work {
+  id                 Int  @id @default(autoincrement()) @db.UnsignedInt
+  event_id           Int  @db.UnsignedInt
+  latest_reviewed_id Int? @db.UnsignedInt
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  bookmarks Bookmark[]
+  events    Event       @relation(fields: [event_id], references: [id])
+  works     Work_data[]
+
+  @@index([event_id])
+}
+
+model Work_data {
+  id                 Int     @id @default(autoincrement()) @db.UnsignedInt
+  work_id            Int     @db.UnsignedInt
+  name               String  @db.VarChar(100)
+  catch_copy         String  @db.VarChar(100)
+  description        String  @db.VarChar(500)
+  works_url          String? @db.VarChar(255)
+  movie_url          String? @db.VarChar(255)
+  system_diagram_url String? @db.VarChar(255)
+  detail             String? @db.Text
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  work_data_genres       Work_data_genre[]
+  work_data_images       Work_data_image[]
+  work_data_technologies Work_data_technology[]
+  work_data_tools        Work_data_tool[]
+  work_data_users        Work_data_user[]
+
+  works Work? @relation(fields: [work_id], references: [id], map: "work_id")
+
+  @@index([work_id])
+}
+
+model Work_data_genre {
+  work_data_id Int @db.UnsignedInt
+  genre_id     Int @db.UnsignedInt
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+  work_data  Work_data @relation(fields: [work_data_id], references: [id])
+  genres     Genre     @relation(fields: [genre_id], references: [id])
+
+  @@id([work_data_id, genre_id])
+  @@index([genre_id])
+  @@index([work_data_id])
+}
+
+model Work_data_technology {
+  work_data_id  Int @db.UnsignedInt
+  technology_id Int @db.UnsignedInt
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  work_data    Work_data  @relation(fields: [work_data_id], references: [id])
+  technologies Technology @relation(fields: [technology_id], references: [id])
+
+  @@id([work_data_id, technology_id])
+  @@index([technology_id])
+  @@index([work_data_id])
+}
+
+model Work_data_user {
+  work_data_id     Int     @db.UnsignedInt
+  user_id          Int     @db.UnsignedInt
+  role_explanation String? @db.VarChar(50)
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  work_data Work_data @relation(fields: [work_data_id], references: [id])
+  users     User      @relation(fields: [user_id], references: [id])
+
+  @@id([work_data_id, user_id])
+  @@index([user_id])
+  @@index([work_data_id])
+}
+
+model Tool {
+  id   Int    @id @default(autoincrement()) @db.UnsignedInt
+  name String @db.VarChar(30)
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  work_data_tools Work_data_tool[]
+}
+
+model Event_user_role {
+  event_id Int @db.UnsignedInt
+  user_id  Int @db.UnsignedInt
+  role_id  Int @db.UnsignedInt
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  events Event @relation(fields: [event_id], references: [id])
+  users  User  @relation(fields: [user_id], references: [id])
+  roles  Role  @relation(fields: [role_id], references: [id])
+
+  @@id([event_id, user_id, role_id])
+  @@index([event_id])
+  @@index([role_id])
+  @@index([user_id])
+}
+
+model Temporary_user {
+  id              Int      @id @default(autoincrement()) @db.UnsignedInt
+  email           String   @unique(map: "email") @db.VarChar(255)
+  hashed_password String   @db.VarChar(255)
+  salt            String   @db.VarChar(255)
+  token           String   @db.VarChar(255)
+  expired_at      DateTime @db.DateTime(0)
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+model Work_data_image {
+  id           Int     @id @default(autoincrement()) @db.UnsignedInt
+  work_data_id Int     @db.UnsignedInt
+  url          String? @db.VarChar(255)
+  order        Int?    @db.TinyInt
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  work_data Work_data @relation(fields: [work_data_id], references: [id])
+
+  @@index([work_data_id])
+}
+
+model Work_data_tool {
+  work_data_id Int @db.UnsignedInt
+  tool_id      Int @db.UnsignedInt
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  work_data Work_data @relation(fields: [work_data_id], references: [id])
+  tools     Tool      @relation(fields: [tool_id], references: [id])
+
+  @@id([work_data_id, tool_id])
+  @@index([tool_id])
+  @@index([work_data_id])
+}
