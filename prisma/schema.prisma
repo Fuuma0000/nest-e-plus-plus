@@ -153,9 +153,8 @@ model User_url {
 }
 
 model Work {
-  id                 Int  @id @default(autoincrement()) @db.UnsignedInt
-  event_id           Int  @db.UnsignedInt
-  latest_reviewed_id Int? @db.UnsignedInt
+  id       Int @id @default(autoincrement()) @db.UnsignedInt
+  event_id Int @db.UnsignedInt
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
@@ -178,6 +177,7 @@ model Work_data {
   movie_url          String? @db.VarChar(255)
   system_diagram_url String? @db.VarChar(255)
   detail             String? @db.Text
+  is_approved        Boolean @default(false)
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
