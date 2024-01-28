@@ -163,7 +163,7 @@ model Work {
 
   bookmarks Bookmark[]
   events    Event       @relation(fields: [event_id], references: [id])
-  works     Work_data[]
+  work_data Work_data[]
 
   @@index([event_id])
 }
@@ -188,7 +188,8 @@ model Work_data {
   work_data_technologies Work_data_technology[]
   work_data_tools        Work_data_tool[]
   work_data_users        Work_data_user[]
-  works                  Work?                  @relation(fields: [work_id], references: [id], map: "work_id")
+
+  works Work? @relation(fields: [work_id], references: [id])
 
   @@index([work_id])
 }
