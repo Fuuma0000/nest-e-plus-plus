@@ -188,8 +188,7 @@ model Work_data {
   work_data_technologies Work_data_technology[]
   work_data_tools        Work_data_tool[]
   work_data_users        Work_data_user[]
-
-  works Work? @relation(fields: [work_id], references: [id], map: "work_id")
+  works                  Work?                  @relation(fields: [work_id], references: [id], map: "work_id")
 
   @@index([work_id])
 }
