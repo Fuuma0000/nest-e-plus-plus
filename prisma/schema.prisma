@@ -14,7 +14,6 @@ model Bookmark {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   works Work @relation(fields: [work_id], references: [id])
   users User @relation(fields: [user_id], references: [id])
@@ -29,7 +28,6 @@ model Course {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   users User[]
 }
@@ -44,7 +42,6 @@ model Event {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   event_user_roles Event_user_role[]
   works            Work[]
@@ -56,7 +53,6 @@ model Genre {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   work_data_genres Work_data_genre[]
 }
@@ -67,7 +63,6 @@ model Job {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   user_jobs User_job[]
 }
@@ -78,7 +73,6 @@ model Role {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   event_user_roles Event_user_role[]
 }
@@ -89,7 +83,6 @@ model Technology {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   work_data_technologies Work_data_technology[]
 }
@@ -98,7 +91,6 @@ model User {
   id                    Int      @id @default(autoincrement()) @db.UnsignedInt
   email                 String   @unique(map: "email") @db.VarChar(255)
   password              String   @db.VarChar(255)
-  salt                  String   @db.VarChar(255)
   username              String?  @db.VarChar(50)
   courses_id            Int?     @db.UnsignedInt
   enrollment_year       Int?
@@ -106,10 +98,10 @@ model User {
   is_job_hunt_completed Boolean? @default(false)
   self_introduction     String?  @db.Text
   icon_url              String?  @db.VarChar(255)
+  is_public_profile     Boolean? @default(false)
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   bookmarks        Bookmark[]
   event_uses_roles Event_user_role[]
@@ -127,7 +119,6 @@ model User_job {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   users User @relation(fields: [user_id], references: [id])
   jobs  Job  @relation(fields: [job_id], references: [id])
@@ -145,7 +136,6 @@ model User_url {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   users User @relation(fields: [user_id], references: [id])
 
@@ -158,7 +148,6 @@ model Work {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   bookmarks Bookmark[]
   events    Event       @relation(fields: [event_id], references: [id])
@@ -181,7 +170,6 @@ model Work_data {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   work_data_genres       Work_data_genre[]
   work_data_images       Work_data_image[]
@@ -200,9 +188,9 @@ model Work_data_genre {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
-  work_data  Work_data @relation(fields: [work_data_id], references: [id])
-  genres     Genre     @relation(fields: [genre_id], references: [id])
+
+  work_data Work_data @relation(fields: [work_data_id], references: [id])
+  genres    Genre     @relation(fields: [genre_id], references: [id])
 
   @@id([work_data_id, genre_id])
   @@index([genre_id])
@@ -215,7 +203,6 @@ model Work_data_technology {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   work_data    Work_data  @relation(fields: [work_data_id], references: [id])
   technologies Technology @relation(fields: [technology_id], references: [id])
@@ -232,7 +219,6 @@ model Work_data_user {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   work_data Work_data @relation(fields: [work_data_id], references: [id])
   users     User      @relation(fields: [user_id], references: [id])
@@ -248,7 +234,6 @@ model Tool {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   work_data_tools Work_data_tool[]
 }
@@ -260,7 +245,6 @@ model Event_user_role {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   events Event @relation(fields: [event_id], references: [id])
   users  User  @relation(fields: [user_id], references: [id])
@@ -272,19 +256,6 @@ model Event_user_role {
   @@index([user_id])
 }
 
-model Temporary_user {
-  id              Int      @id @default(autoincrement()) @db.UnsignedInt
-  email           String   @unique(map: "email") @db.VarChar(255)
-  hashed_password String   @db.VarChar(255)
-  salt            String   @db.VarChar(255)
-  token           String   @db.VarChar(255)
-  expired_at      DateTime @db.DateTime(0)
-
-  created_at DateTime? @default(now()) @db.DateTime(0)
-  updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
-}
-
 model Work_data_image {
   id           Int     @id @default(autoincrement()) @db.UnsignedInt
   work_data_id Int     @db.UnsignedInt
@@ -293,7 +264,6 @@ model Work_data_image {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   work_data Work_data @relation(fields: [work_data_id], references: [id])
 
@@ -306,7 +276,6 @@ model Work_data_tool {
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
-  deleted_at DateTime? @db.DateTime(0)
 
   work_data Work_data @relation(fields: [work_data_id], references: [id])
   tools     Tool      @relation(fields: [tool_id], references: [id])
@@ -315,3 +284,43 @@ model Work_data_tool {
   @@index([tool_id])
   @@index([work_data_id])
 }
+
+// メール認証待ちのユーザー
+model Signup_verification {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  email      String   @unique(map: "email") @db.VarChar(255)
+  password   String   @db.VarChar(255)
+  token      String   @db.VarChar(255)
+  expired_at DateTime @db.DateTime(0)
+
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+}
+
+// //パスワードリセット待ちのユーザー
+// model Password_reset_verification {
+//   id         Int      @id @default(autoincrement()) @db.UnsignedInt
+//   user_id    Int      @db.UnsignedInt
+//   email      String   @unique(map: "email") @db.VarChar(255)
+//   token      String   @db.VarChar(255)
+//   expired_at DateTime @db.DateTime(0)
+
+//   created_at DateTime? @default(now()) @db.DateTime(0)
+//   updated_at DateTime? @default(now()) @db.DateTime(0)
+// }
+
+// // メール変更待ちのユーザー
+// model Email_change_verification {
+//   id         Int      @id @default(autoincrement()) @db.UnsignedInt
+//   user_id    Int      @db.UnsignedInt
+//   email      String   @unique(map: "email") @db.VarChar(255)
+//   token      String   @db.VarChar(255)
+//   expired_at DateTime @db.DateTime(0)
+
+//   created_at DateTime? @default(now()) @db.DateTime(0)
+//   updated_at DateTime? @default(now()) @db.DateTime(0)
+
+//   users User @relation(fields: [user_id], references: [id])
+
+//   @@index([user_id])
+// }

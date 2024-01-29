@@ -5,7 +5,6 @@ CREATE TABLE `Bookmark` (
     `user_id` INTEGER UNSIGNED NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     INDEX `Bookmark_user_id_idx`(`user_id`),
     INDEX `Bookmark_work_id_idx`(`work_id`),
@@ -18,7 +17,6 @@ CREATE TABLE `Course` (
     `name` VARCHAR(30) NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -33,7 +31,6 @@ CREATE TABLE `Event` (
     `description` TEXT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -44,7 +41,6 @@ CREATE TABLE `Genre` (
     `name` VARCHAR(30) NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -55,7 +51,6 @@ CREATE TABLE `Job` (
     `name` VARCHAR(30) NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -66,7 +61,6 @@ CREATE TABLE `Role` (
     `name` VARCHAR(30) NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -77,7 +71,6 @@ CREATE TABLE `Technology` (
     `name` VARCHAR(30) NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -95,9 +88,9 @@ CREATE TABLE `User` (
     `is_job_hunt_completed` BOOLEAN NULL DEFAULT false,
     `self_introduction` TEXT NULL,
     `icon_url` VARCHAR(255) NULL,
+    `is_public_profile` BOOLEAN NULL DEFAULT false,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     UNIQUE INDEX `email`(`email`),
     INDEX `User_courses_id_idx`(`courses_id`),
@@ -110,7 +103,6 @@ CREATE TABLE `User_job` (
     `job_id` INTEGER UNSIGNED NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     INDEX `User_job_job_id_idx`(`job_id`),
     INDEX `User_job_user_id_idx`(`user_id`),
@@ -125,7 +117,6 @@ CREATE TABLE `User_url` (
     `url` VARCHAR(255) NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     INDEX `User_url_user_id_idx`(`user_id`),
     PRIMARY KEY (`id`)
@@ -135,10 +126,8 @@ CREATE TABLE `User_url` (
 CREATE TABLE `Work` (
     `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `event_id` INTEGER UNSIGNED NOT NULL,
-    `latest_reviewed_id` INTEGER UNSIGNED NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     INDEX `Work_event_id_idx`(`event_id`),
     PRIMARY KEY (`id`)
@@ -155,9 +144,9 @@ CREATE TABLE `Work_data` (
     `movie_url` VARCHAR(255) NULL,
     `system_diagram_url` VARCHAR(255) NULL,
     `detail` TEXT NULL,
+    `is_approved` BOOLEAN NOT NULL DEFAULT false,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     INDEX `Work_data_work_id_idx`(`work_id`),
     PRIMARY KEY (`id`)
@@ -169,7 +158,6 @@ CREATE TABLE `Work_data_genre` (
     `genre_id` INTEGER UNSIGNED NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     INDEX `Work_data_genre_genre_id_idx`(`genre_id`),
     INDEX `Work_data_genre_work_data_id_idx`(`work_data_id`),
@@ -182,7 +170,6 @@ CREATE TABLE `Work_data_technology` (
     `technology_id` INTEGER UNSIGNED NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     INDEX `Work_data_technology_technology_id_idx`(`technology_id`),
     INDEX `Work_data_technology_work_data_id_idx`(`work_data_id`),
@@ -196,7 +183,6 @@ CREATE TABLE `Work_data_user` (
     `role_explanation` VARCHAR(50) NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     INDEX `Work_data_user_user_id_idx`(`user_id`),
     INDEX `Work_data_user_work_data_id_idx`(`work_data_id`),
@@ -209,7 +195,6 @@ CREATE TABLE `Tool` (
     `name` VARCHAR(30) NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -221,28 +206,11 @@ CREATE TABLE `Event_user_role` (
     `role_id` INTEGER UNSIGNED NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     INDEX `Event_user_role_event_id_idx`(`event_id`),
     INDEX `Event_user_role_role_id_idx`(`role_id`),
     INDEX `Event_user_role_user_id_idx`(`user_id`),
     PRIMARY KEY (`event_id`, `user_id`, `role_id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `Temporary_user` (
-    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `email` VARCHAR(255) NOT NULL,
-    `hashed_password` VARCHAR(255) NOT NULL,
-    `salt` VARCHAR(255) NOT NULL,
-    `token` VARCHAR(255) NOT NULL,
-    `expired_at` DATETIME(0) NOT NULL,
-    `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
-
-    UNIQUE INDEX `email`(`email`),
-    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -253,7 +221,6 @@ CREATE TABLE `Work_data_image` (
     `order` TINYINT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     INDEX `Work_data_image_work_data_id_idx`(`work_data_id`),
     PRIMARY KEY (`id`)
@@ -265,11 +232,23 @@ CREATE TABLE `Work_data_tool` (
     `tool_id` INTEGER UNSIGNED NOT NULL,
     `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `deleted_at` DATETIME(0) NULL,
 
     INDEX `Work_data_tool_tool_id_idx`(`tool_id`),
     INDEX `Work_data_tool_work_data_id_idx`(`work_data_id`),
     PRIMARY KEY (`work_data_id`, `tool_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Signup_verification` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `email` VARCHAR(255) NOT NULL,
+    `token` VARCHAR(255) NOT NULL,
+    `expired_at` DATETIME(0) NOT NULL,
+    `created_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `updated_at` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+
+    UNIQUE INDEX `email`(`email`),
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
@@ -294,7 +273,7 @@ ALTER TABLE `User_url` ADD CONSTRAINT `User_url_user_id_fkey` FOREIGN KEY (`user
 ALTER TABLE `Work` ADD CONSTRAINT `Work_event_id_fkey` FOREIGN KEY (`event_id`) REFERENCES `Event`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Work_data` ADD CONSTRAINT `work_id` FOREIGN KEY (`work_id`) REFERENCES `Work`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Work_data` ADD CONSTRAINT `Work_data_work_id_fkey` FOREIGN KEY (`work_id`) REFERENCES `Work`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Work_data_genre` ADD CONSTRAINT `Work_data_genre_work_data_id_fkey` FOREIGN KEY (`work_data_id`) REFERENCES `Work_data`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

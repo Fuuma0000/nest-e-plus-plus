@@ -1,21 +1,9 @@
 import { Module } from '@nestjs/common';
-import { EventsModule } from './events/events.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [
-    EventsModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3309,
-      username: 'user',
-      password: 'password',
-      database: 'e-ten',
-      entities: [],
-      synchronize: true,
-    }),
-  ],
+  imports: [UsersModule, AuthModule],
   controllers: [],
   providers: [],
 })
