@@ -27,6 +27,6 @@ logsf:
 	$(dc) logs -f
 
 mysql:
-	$(dc) exec -it e-plus-plus-db  bash  -c "mysql -u root -p e-ten"  
+	$(dc) exec -it mysql bash  -c "mysql -u root -p e-ten"  
 
 
