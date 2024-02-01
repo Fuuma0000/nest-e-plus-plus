@@ -1,22 +1,27 @@
+// refresh-jwt.strategy.ts
+
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class RefreshJwtStrategy extends PassportStrategy(
+  Strategy,
+  'refresh-jwt',
+) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req) => {
           let jwt = null;
           if (req && req.cookies) {
-            jwt = req.cookies['x-access-token'];
+            jwt = req.cookies['x-refresh-token'];
           }
           return jwt;
         },
       ]),
-      ignoreExpiration: false, // 期限切れのトークンは無視しない
-      secretOrKey: process.env.JWT_SECRET_KEY,
+      ignoreExpiration: false,
+      secretOrKey: process.env.REFRESH_JWT_SECRET_KEY, // 別途設定が必要
     });
   }
 
