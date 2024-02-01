@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  findAll() {
-    return `This action returns all users`;
+  constructor(private readonly prisma: PrismaClient) {}
+  findAll(userId: string) {
+    console.log('userId', userId);
+    return this.prisma.user.findMany();
   }
 
   findOne(id: number) {

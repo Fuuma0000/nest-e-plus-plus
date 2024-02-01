@@ -6,19 +6,25 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { PrismaClient } from '@prisma/client';
+import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
+import { RefreshJwtStrategy } from './refresh-jwt.strategy';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET_KEY,
-      signOptions: {
-        expiresIn: 3600,
-      },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard, PrismaClient],
-  exports: [JwtStrategy, JwtAuthGuard],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtAuthGuard,
+    RefreshJwtStrategy,
+    RefreshJwtAuthGuard,
+    PrismaClient,
+  ],
+  exports: [JwtStrategy, RefreshJwtStrategy, JwtAuthGuard, RefreshJwtAuthGuard],
 })
 export class AuthModule {}

@@ -111,15 +111,23 @@ export class AuthService {
     return signupVerification;
   }
 
-  async signIn(signINUserDto: SigninUserDto): Promise<{ accessToken: string }> {
+  async signIn(
+    signINUserDto: SigninUserDto,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const { email, password } = signINUserDto;
     const user = await this.prisma.user.findUnique({
       where: { email: email },
     });
     if (user && (await bcrypt.compare(password, user.password))) {
-      const payload = { sub: user.id, username: user.username };
-      const accessToken = await this.jwtService.sign(payload);
-      return { accessToken };
+      const payload = { sub: user.id };
+      const accessToken = await this.jwtService.sign(payload, {
+        expiresIn: '1h',
+      });
+      const refreshToken = await this.jwtService.sign(payload, {
+        expiresIn: '31d',
+      });
+
+      return { accessToken, refreshToken };
     }
     throw new UnauthorizedException('ユーザ名かパスワードが間違っています');
   }
@@ -155,5 +163,13 @@ export class AuthService {
     });
     // 仮登録情報は一括で削除するのでやらない
     return user;
+  }
+
+  async refresh(userId: string): Promise<{ accessToken: string }> {
+    const payload = { sub: userId };
+    const accessToken = await this.jwtService.sign(payload, {
+      expiresIn: '1h',
+    });
+    return { accessToken };
   }
 }
