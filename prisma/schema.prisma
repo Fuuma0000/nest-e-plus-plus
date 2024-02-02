@@ -8,7 +8,6 @@ datasource db {
 }
 
 model Bookmark {
-  id      Int @id @default(autoincrement()) @db.UnsignedInt
   work_id Int @db.UnsignedInt
   user_id Int @db.UnsignedInt
 
@@ -18,6 +17,7 @@ model Bookmark {
   works Work @relation(fields: [work_id], references: [id])
   users User @relation(fields: [user_id], references: [id])
 
+  @@id([work_id, user_id])
   @@index([user_id])
   @@index([work_id])
 }
@@ -39,6 +39,7 @@ model Event {
   end_at      DateTime? @db.DateTime(0)
   icon_url    String?   @db.VarChar(255)
   description String?   @db.Text
+  password    String?   @db.VarChar(255)
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
@@ -104,7 +105,7 @@ model User {
   updated_at DateTime? @default(now()) @db.DateTime(0)
 
   bookmarks        Bookmark[]
-  event_uses_roles Event_user_role[]
+  event_user_roles Event_user_role[]
   courses          Course?           @relation(fields: [courses_id], references: [id])
   user_jobs        User_job[]
   user_urls        User_url[]
