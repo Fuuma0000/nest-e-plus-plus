@@ -54,10 +54,10 @@ export class UsersService {
     console.log('updateUserDto', updateUserDto);
   }
 
-  remove(userId: string) {
+  remove(userId: number) {
     return this.prisma.user.delete({
       where: {
-        id: parseInt(userId),
+        id: userId,
       },
     });
   }
