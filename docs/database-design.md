@@ -27,8 +27,8 @@ erDiagram
     work ||--o{ work_share_url : ""
 
     bookmark {
-        works_id INT FK
-        users_id INT FK
+        work_id INT FK
+        user_id INT FK
     }
 
     affiliation {
