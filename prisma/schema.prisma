@@ -8,7 +8,6 @@ datasource db {
 }
 
 model Bookmark {
-  id      Int @id @default(autoincrement()) @db.UnsignedInt
   work_id Int @db.UnsignedInt
   user_id Int @db.UnsignedInt
 
@@ -18,11 +17,12 @@ model Bookmark {
   works Work @relation(fields: [work_id], references: [id])
   users User @relation(fields: [user_id], references: [id])
 
+  @@id([work_id, user_id])
   @@index([user_id])
   @@index([work_id])
 }
 
-model Course {
+model Affiliation {
   id   Int    @id @default(autoincrement()) @db.UnsignedInt
   name String @db.VarChar(30)
 
@@ -33,12 +33,15 @@ model Course {
 }
 
 model Event {
-  id          Int       @id @default(autoincrement()) @db.UnsignedInt
-  name        String    @db.VarChar(50)
-  start_at    DateTime? @db.DateTime(0)
-  end_at      DateTime? @db.DateTime(0)
-  icon_url    String?   @db.VarChar(255)
-  description String?   @db.Text
+  id                   Int       @id @default(autoincrement()) @db.UnsignedInt
+  name                 String    @db.VarChar(50)
+  start_at             DateTime? @db.DateTime(0)
+  end_at               DateTime? @db.DateTime(0)
+  icon_url             String?   @db.VarChar(255)
+  description          String?   @db.Text // イベントの説明
+  need_proofreading    Boolean?  @default(false) // イベントに校正が必要かどうか
+  is_requires_password Boolean?  @default(false) // イベントにパスワードが必要かどうか
+  password             String?   @db.VarChar(255) // イベントに設定されたパスワード
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
@@ -88,29 +91,32 @@ model Technology {
 }
 
 model User {
-  id                    Int      @id @default(autoincrement()) @db.UnsignedInt
-  email                 String   @unique(map: "email") @db.VarChar(255)
-  password              String   @db.VarChar(255)
-  username              String?  @db.VarChar(50)
-  courses_id            Int?     @db.UnsignedInt
-  enrollment_year       Int?
-  graduation_year       Int?
-  is_job_hunt_completed Boolean? @default(false)
-  self_introduction     String?  @db.Text
-  icon_url              String?  @db.VarChar(255)
-  is_public_profile     Boolean? @default(false)
+  id                           Int      @id @default(autoincrement()) @db.UnsignedInt
+  email                        String   @unique(map: "email") @db.VarChar(255)
+  password                     String   @db.VarChar(255)
+  username                     String?  @db.VarChar(50)
+  affiliation_id               Int?     @db.UnsignedInt // 学校などの所属
+  enrollment_year              Int?
+  graduation_year              Int?
+  is_job_hunt_completed        Boolean? @default(false)
+  self_introduction            String?  @db.Text
+  icon_url                     String?  @db.VarChar(255)
+  show_profile_in_shared_url   Boolean? @default(false)
+  show_profile_in_public_event Boolean? @default(false)
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
 
-  bookmarks        Bookmark[]
-  event_uses_roles Event_user_role[]
-  courses          Course?           @relation(fields: [courses_id], references: [id])
-  user_jobs        User_job[]
-  user_urls        User_url[]
-  work_data_users  Work_data_user[]
+  bookmarks                   Bookmark[]
+  event_user_roles            Event_user_role[]
+  affiliation                 Affiliation?                  @relation(fields: [affiliation_id], references: [id])
+  user_jobs                   User_job[]
+  user_urls                   User_url[]
+  work_data_users             Work_data_user[]
+  Email_change_verification   Email_change_verification[]
+  Password_reset_verification Password_reset_verification[]
 
-  @@index([courses_id])
+  @@index([affiliation_id])
 }
 
 model User_job {
@@ -149,9 +155,10 @@ model Work {
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
 
-  bookmarks Bookmark[]
-  events    Event       @relation(fields: [event_id], references: [id])
-  work_data Work_data[]
+  bookmarks      Bookmark[]
+  events         Event           @relation(fields: [event_id], references: [id])
+  work_data      Work_data[]
+  work_share_url Work_share_url?
 
   @@index([event_id])
 }
@@ -162,7 +169,7 @@ model Work_data {
   name               String  @db.VarChar(100)
   catch_copy         String  @db.VarChar(100)
   description        String  @db.VarChar(500)
-  works_url          String? @db.VarChar(255)
+  work_url           String? @db.VarChar(255)
   movie_url          String? @db.VarChar(255)
   system_diagram_url String? @db.VarChar(255)
   detail             String? @db.Text
@@ -297,30 +304,44 @@ model Signup_verification {
   updated_at DateTime? @default(now()) @db.DateTime(0)
 }
 
-// //パスワードリセット待ちのユーザー
-// model Password_reset_verification {
-//   id         Int      @id @default(autoincrement()) @db.UnsignedInt
-//   user_id    Int      @db.UnsignedInt
-//   email      String   @unique(map: "email") @db.VarChar(255)
-//   token      String   @db.VarChar(255)
-//   expired_at DateTime @db.DateTime(0)
+// パスワードリセット待ちのユーザー
+model Password_reset_verification {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int      @db.UnsignedInt
+  email      String   @unique(map: "email") @db.VarChar(255)
+  token      String   @db.VarChar(255)
+  expired_at DateTime @db.DateTime(0)
 
-//   created_at DateTime? @default(now()) @db.DateTime(0)
-//   updated_at DateTime? @default(now()) @db.DateTime(0)
-// }
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+
+  users User @relation(fields: [user_id], references: [id])
+}
 
 // // メール変更待ちのユーザー
-// model Email_change_verification {
-//   id         Int      @id @default(autoincrement()) @db.UnsignedInt
-//   user_id    Int      @db.UnsignedInt
-//   email      String   @unique(map: "email") @db.VarChar(255)
-//   token      String   @db.VarChar(255)
-//   expired_at DateTime @db.DateTime(0)
+model Email_change_verification {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int      @db.UnsignedInt
+  email      String   @unique(map: "email") @db.VarChar(255)
+  token      String   @db.VarChar(255)
+  expired_at DateTime @db.DateTime(0)
 
-//   created_at DateTime? @default(now()) @db.DateTime(0)
-//   updated_at DateTime? @default(now()) @db.DateTime(0)
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
 
-//   users User @relation(fields: [user_id], references: [id])
+  users User @relation(fields: [user_id], references: [id])
 
-//   @@index([user_id])
-// }
+  @@index([user_id])
+}
+
+model Work_share_url {
+  id           Int    @id @default(autoincrement()) @db.UnsignedInt
+  work_id      Int    @unique @db.UnsignedInt
+  public_path  String @unique @db.VarChar(36)
+  access_token String @unique @db.VarChar(36)
+
+  created_at DateTime @default(now()) @db.DateTime(0)
+  updated_at DateTime @default(now()) @db.DateTime(0)
+
+  work Work @relation(fields: [work_id], references: [id])
+}
