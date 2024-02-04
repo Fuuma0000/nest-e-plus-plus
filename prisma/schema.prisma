@@ -46,8 +46,8 @@ model Event {
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
 
-  event_user_roles Event_user_role[]
-  works            Work[]
+  event_user_authoritys Event_user_authority[]
+  works                 Work[]
 }
 
 model Genre {
@@ -70,14 +70,14 @@ model Job {
   user_jobs User_job[]
 }
 
-model Role {
+model Authority {
   id   Int    @id @default(autoincrement()) @db.UnsignedInt
   name String @db.VarChar(30)
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
 
-  event_user_roles Event_user_role[]
+  event_user_authoritys Event_user_authority[]
 }
 
 model Technology {
@@ -108,7 +108,7 @@ model User {
   updated_at DateTime? @default(now()) @db.DateTime(0)
 
   bookmarks                   Bookmark[]
-  event_user_roles            Event_user_role[]
+  event_user_authorities      Event_user_authority[]
   affiliation                 Affiliation?                  @relation(fields: [affiliation_id], references: [id])
   user_jobs                   User_job[]
   user_urls                   User_url[]
@@ -245,21 +245,21 @@ model Tool {
   work_data_tools Work_data_tool[]
 }
 
-model Event_user_role {
-  event_id Int @db.UnsignedInt
-  user_id  Int @db.UnsignedInt
-  role_id  Int @db.UnsignedInt
+model Event_user_authority {
+  event_id     Int @db.UnsignedInt
+  user_id      Int @db.UnsignedInt
+  authority_id Int @db.UnsignedInt
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
 
-  events Event @relation(fields: [event_id], references: [id])
-  users  User  @relation(fields: [user_id], references: [id])
-  roles  Role  @relation(fields: [role_id], references: [id])
+  events     Event     @relation(fields: [event_id], references: [id])
+  users      User      @relation(fields: [user_id], references: [id])
+  authoritys Authority @relation(fields: [authority_id], references: [id])
 
-  @@id([event_id, user_id, role_id])
+  @@id([event_id, user_id, authority_id])
   @@index([event_id])
-  @@index([role_id])
+  @@index([authority_id])
   @@index([user_id])
 }
 

@@ -1,7 +1,7 @@
 ```mermaid
 erDiagram
 
-    event ||--o{ event_user_role : ""
+    event ||--o{ event_user_authority : ""
     event ||--o{ work : ""
     work ||--o{ work_data : ""
     work_data ||--o{ work_data_genre : ""
@@ -11,14 +11,14 @@ erDiagram
     work ||--o{ bookmark : ""
     user ||--o{ work_data_user : ""
     user ||--o{ bookmark : ""
-    user ||--o{ event_user_role : ""
+    user ||--o{ event_user_authority : ""
     user ||--|| affiliation : ""
     user ||--o{ user_job : ""
     user ||--o{ user_url : ""
     job ||--o{ user_job : ""
     genre ||--o{ work_data_genre : ""
     technology ||--o{ work_data_technology : ""
-    role ||--o{ event_user_role : ""
+    authority ||--o{ event_user_authority : ""
     tool ||--o{ work_data_tool : ""
     signup_verification ||--o{ user : ""
     password_reset_verification ||--o{ user : ""
@@ -58,7 +58,7 @@ erDiagram
         name VARCHAR(30)
     }
 
-    role {
+    authority {
         id INT PK
         name VARCHAR(30)
     }
@@ -134,10 +134,10 @@ erDiagram
         name VARCHAR(30)
     }
 
-    event_user_role {
+    event_user_authority {
         event_id INT FK
         user_id INT FK
-        role_id INT FK
+        authority_id INT FK
     }
 
     work_data_image {
