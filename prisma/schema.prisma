@@ -318,7 +318,7 @@ model Password_reset_verification {
   users User @relation(fields: [user_id], references: [id])
 }
 
-// // メール変更待ちのユーザー
+// メール変更待ちのユーザー
 model Email_change_verification {
   id         Int      @id @default(autoincrement()) @db.UnsignedInt
   user_id    Int      @db.UnsignedInt
@@ -334,11 +334,11 @@ model Email_change_verification {
   @@index([user_id])
 }
 
+// 作品の共有URL
 model Work_share_url {
-  id           Int    @id @default(autoincrement()) @db.UnsignedInt
-  work_id      Int    @unique @db.UnsignedInt
-  public_path  String @unique @db.VarChar(36)
-  access_token String @unique @db.VarChar(36)
+  id      String @id @default(uuid()) @db.VarChar(36)
+  work_id Int    @unique @db.UnsignedInt
+  token   String @unique @db.VarChar(36)
 
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
