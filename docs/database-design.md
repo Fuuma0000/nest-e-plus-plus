@@ -178,10 +178,9 @@ erDiagram
     }
 
     work_share_url {
-        id INT PK
+        id VarChar(36) PK
         work_id INT FK
-        public_path VARCHAR(36)
-        access_token VARCHAR(36)
+        token VARCHAR(36)
     }
 
 ```
