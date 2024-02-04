@@ -154,8 +154,11 @@ erDiagram
 
     signup_verification {
         id INT PK
+        email VARCHAR(255)
         user_id INT FK
+        password VARCHAR(255)
         token VARCHAR(255)
+        expired_at DATETIME
     }
 
     password_reset_verification {
