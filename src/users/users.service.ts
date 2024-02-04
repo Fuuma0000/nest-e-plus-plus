@@ -1,51 +1,67 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PrismaClient } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
+
   constructor(private readonly prisma: PrismaClient) {}
 
   async findOne(userId: number) {
-    let returnVal;
-
-    try {
-      const user = await this.prisma.user.findUnique({
-        where: {
-          id: userId,
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        enrollment_year: true,
+        graduation_year: true,
+        is_job_hunt_completed: true,
+        self_introduction: true,
+        icon_url: true,
+        created_at: true,
+        updated_at: true,
+        bookmarks: {
+          select: {
+            work_id: true,
+          },
         },
-        select: {
-          id: true,
-          email: true,
-          username: true,
-          courses_id: true,
-          enrollment_year: true,
-          graduation_year: true,
-          is_job_hunt_completed: true,
-          self_introduction: true,
-          icon_url: true,
-          is_public_profile: true,
-          created_at: true,
-          updated_at: true,
-          bookmarks: true,
-          event_user_roles: true,
-          courses: true,
-          user_jobs: true,
-          user_urls: true,
-          work_data_users: true,
+        event_user_roles: {
+          select: {
+            event_id: true,
+          },
         },
-      });
-      return user;
-    } catch (error) {
-      console.log('error', error);
-      return returnVal;
+        courses: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        user_jobs: true,
+        user_urls: true,
+        work_data_users: true,
+      },
+    });
+    if (!user) {
+      // ユーザが存在しない場合、NotFoundExceptionをスロー
+      throw new NotFoundException(`User with ID ${userId} not found`);
     }
+    return user;
   }
 
-  update(userId: string, updateUserDto: UpdateUserDto) {
+  update(userId: number, updateUserDto: UpdateUserDto) {
     console.log('updateUserDto', updateUserDto);
   }
 
+  remove(userId: string) {
+    return this.prisma.user.delete({
+      where: {
+        id: parseInt(userId),
+      },
+    });
   remove(userId: string) {
     return this.prisma.user.delete({
       where: {
