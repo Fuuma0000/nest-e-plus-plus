@@ -103,7 +103,6 @@ export class UsersService {
       const works = getWorks
         .map((eventAuthority) => {
           const events = eventAuthority?.events;
-          console.log('events', events);
           if (events?.works) {
             // イベントが複数ある場合、それぞれの最新の作品を取得
             return events.works
