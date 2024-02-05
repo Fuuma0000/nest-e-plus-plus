@@ -12,7 +12,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { SigninUserDto } from './dto/signin-user.dto';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
 import { GetId } from './decorator/get-id.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
