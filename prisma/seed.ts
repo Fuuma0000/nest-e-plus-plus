@@ -157,8 +157,28 @@ async function main() {
       order: 2,
     },
     {
+      work_data_id: 1,
+      url: 'https://image.example3.com',
+      order: 3,
+    },
+    {
+      work_data_id: 1,
+      url: 'https://image.example4.com',
+      order: 4,
+    },
+    {
       work_data_id: 2,
       url: 'https://image.example3.com',
+      order: 1,
+    },
+    {
+      work_data_id: 2,
+      url: 'https://image.example4.com',
+      order: 2,
+    },
+    {
+      work_data_id: 3,
+      url: 'https://image.example5.com',
       order: 1,
     },
   ];
