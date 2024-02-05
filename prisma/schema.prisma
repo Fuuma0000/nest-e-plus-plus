@@ -91,18 +91,18 @@ model Technology {
 }
 
 model User {
-  id                           Int      @id @default(autoincrement()) @db.UnsignedInt
-  email                        String   @unique(map: "email") @db.VarChar(255)
-  password                     String   @db.VarChar(255)
-  username                     String?  @db.VarChar(50)
-  affiliation_id               Int?     @db.UnsignedInt // 学校などの所属
+  id                           Int     @id @default(autoincrement()) @db.UnsignedInt
+  email                        String  @unique(map: "email") @db.VarChar(255)
+  password                     String  @db.VarChar(255)
+  username                     String? @db.VarChar(50)
+  affiliation_id               Int?    @db.UnsignedInt // 学校などの所属
   enrollment_year              Int?
   graduation_year              Int?
-  is_job_hunt_completed        Boolean? @default(false)
-  self_introduction            String?  @db.Text
-  icon_url                     String?  @db.VarChar(255)
-  show_profile_in_shared_url   Boolean? @default(false)
-  show_profile_in_public_event Boolean? @default(false)
+  is_job_hunt_completed        Boolean @default(false)
+  self_introduction            String? @db.Text
+  icon_url                     String? @db.VarChar(255)
+  show_profile_in_shared_url   Boolean @default(false)
+  show_profile_in_public_event Boolean @default(false)
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
@@ -135,10 +135,10 @@ model User_job {
 }
 
 model User_url {
-  id       Int    @id @default(autoincrement()) @db.UnsignedInt
-  user_id  Int    @db.UnsignedInt
-  url_name String @db.VarChar(30)
-  url      String @db.VarChar(255)
+  id      Int    @id @default(autoincrement()) @db.UnsignedInt
+  user_id Int    @db.UnsignedInt
+  name    String @db.VarChar(30)
+  url     String @db.VarChar(255)
 
   created_at DateTime? @default(now()) @db.DateTime(0)
   updated_at DateTime? @default(now()) @db.DateTime(0)
