@@ -148,11 +148,14 @@ export class UsersService {
     console.log('updateUserDto', updateUserDto);
   }
 
-  remove(userId: number) {
-    return this.prisma.user.delete({
-      where: {
-        id: userId,
-      },
-    });
-  }
+  // remove(userId: number) {
+  // Foreign key constraint failed on the field:になる
+  // onDelete: Cascadeとかにするか、deleteManyで削除する
+
+  //   return this.prisma.user.delete({
+  //     where: {
+  //       id: userId,
+  //     },
+  //   });
+  // }
 }

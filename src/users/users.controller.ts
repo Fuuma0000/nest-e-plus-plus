@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -59,9 +51,17 @@ export class UsersController {
     return this.usersService.update(+userId, updateUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Delete(':id')
-  remove(@GetId() userId: string) {
-    return this.usersService.remove(+userId);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Delete('me')
+  // @ApiResponse({
+  //   status: 204,
+  //   description: '成功時のレスポンス',
+  // })
+  // @ApiResponse({
+  //   status: 404,
+  //   description: 'ユーザが見つからない時のエラー',
+  // })
+  // remove(@GetId() userId: string) {
+  //   return this.usersService.remove(+userId);
+  // }
 }
