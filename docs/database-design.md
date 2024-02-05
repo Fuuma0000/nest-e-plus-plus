@@ -91,7 +91,7 @@ erDiagram
     user_url {
         id INT PK
         user_id INT FK
-        url_name VARCHAR(30)
+        name VARCHAR(30)
         url VARCHAR(255)
     }
 
