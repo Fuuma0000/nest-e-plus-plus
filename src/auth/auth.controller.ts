@@ -12,18 +12,42 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { SigninUserDto } from './dto/signin-user.dto';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
 import { GetId } from './decorator/get-id.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @ApiResponse({
+    status: 201,
+    description: '成功時のレスポンス',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'リクエストが不正な時のエラー',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'ユーザが既に存在する時のエラー',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'サーバーエラー',
+  })
   @Post('signup')
   async signUp(@Body() createUserDto: CreateUserDto) {
     return await this.authService.signUp(createUserDto);
   }
 
+  @ApiResponse({
+    status: 200,
+    description: '成功時のレスポンス',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'リクエストが不正な時のエラー',
+  })
   @Post('signin')
   async signIn(
     @Body() signinUserDto: SigninUserDto,
