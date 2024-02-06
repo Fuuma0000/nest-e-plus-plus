@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
     .setTitle('E-Plus-Plus API')
-    .setDescription('The DQ Weapons API description')
+    .setDescription('イベント作品投稿サイトのAPIです')
     .setVersion('1.0')
     .build();
 
