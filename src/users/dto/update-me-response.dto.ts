@@ -60,13 +60,10 @@ export class UpdateMeResponseDto {
   // 所属
   @ApiProperty({
     type: 'object',
-    properties: {
-      id: { type: 'number' },
-      name: { type: 'string' },
-    },
-    example: { id: 1, name: '情報学部' },
+    properties: { id: { type: 'number' }, name: { type: 'string' } },
+    example: { id: 1, name: '株式会社hoge' },
   })
-  affiliation: Map<number, string>;
+  affiliation: { id: number; name: string };
 
   // 希望職種 複数
   @ApiProperty({

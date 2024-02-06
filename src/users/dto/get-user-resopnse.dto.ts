@@ -29,7 +29,7 @@ export class GetUserResponseDto {
 
   // 所属
   @ApiProperty()
-  affiliation: Map<number, string>;
+  affiliation: { id: number; name: string };
 
   // 希望職種 複数
   @ApiProperty({
