@@ -6,7 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
-    .setTitle('DQ Weapons API')
+    .setTitle('E-Plus-Plus API')
     .setDescription('The DQ Weapons API description')
     .setVersion('1.0')
     .build();
