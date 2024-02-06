@@ -6,6 +6,7 @@ import { GetId } from 'src/auth/decorator/get-id.decorator';
 import { GetUserResponseDto } from './dto/get-user-resopnse.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateMeResponseDto } from './dto/update-me-response.dto';
+import { GetMeResponseDto } from './dto/get-me-resopnse.dto';
 
 @ApiTags('users') // 必要に応じてタグを追加
 @Controller('users')
@@ -17,13 +18,13 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: '成功時のレスポンス',
-    type: GetUserResponseDto,
+    type: GetMeResponseDto,
   })
   @ApiResponse({
     status: 404,
     description: 'ユーザが見つからない時のエラー',
   })
-  findMe(@GetId() userId: string): Promise<GetUserResponseDto> {
+  findMe(@GetId() userId: string): Promise<GetMeResponseDto> {
     return this.usersService.findOne(+userId);
   }
 
@@ -32,7 +33,7 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: '成功時のレスポンス',
-    type: GetUserResponseDto,
+    type: GetMeResponseDto,
   })
   @ApiResponse({
     status: 403,
