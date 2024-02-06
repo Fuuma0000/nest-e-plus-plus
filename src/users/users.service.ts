@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateMeDto } from './dto/update-me.dto';
 import { PrismaClient } from '@prisma/client';
 import { GetUserResponseDto } from './dto/get-user-resopnse.dto';
+import { UpdateMeResponseDto } from './dto/update-me-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -133,7 +134,7 @@ export class UsersService {
       responseDto.is_job_hunt_completed = user.is_job_hunt_completed;
       responseDto.self_introduction = user.self_introduction;
       responseDto.icon_url = user.icon_url;
-      responseDto.affiliation = user.affiliation[0];
+      responseDto.affiliation = user.affiliation;
       responseDto.user_jobs = user.user_jobs[0].jobs[0];
       responseDto.user_urls = user.user_urls;
       responseDto.works = works;
@@ -144,8 +145,134 @@ export class UsersService {
     }
   }
 
-  update(userId: number, updateUserDto: UpdateUserDto) {
-    console.log('updateUserDto', updateUserDto);
+  async update(
+    userId: number,
+    updateMeDto: UpdateMeDto,
+  ): Promise<UpdateMeResponseDto> {
+    // データベースからユーザーを取得
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    // ユーザーが存在しない場合の処理
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
+    // ユーザーの情報を更新
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        username: updateMeDto.username,
+        enrollment_year: updateMeDto.enrollment_year,
+        graduation_year: updateMeDto.graduation_year,
+        is_job_hunt_completed: updateMeDto.is_job_hunt_completed,
+        self_introduction: updateMeDto.self_introduction,
+        icon_url: updateMeDto.icon_url,
+        show_profile_in_shared_url: updateMeDto.show_profile_in_shared_url,
+        show_profile_in_public_event: updateMeDto.show_profile_in_public_event,
+        // 希望職種に関するフィールド
+        user_jobs: {
+          deleteMany: {
+            // 中間テーブルのデータを削除
+            // skipDuplicatesでは過去のデータを削除しないので使えなかった
+            user_id: userId,
+          },
+          createMany: {
+            data: updateMeDto.user_jobs.map((jobId) => {
+              return {
+                job_id: jobId,
+              };
+            }),
+          },
+        },
+        user_urls: {
+          deleteMany: {
+            // 削除条件を指定（今回は全て削除）
+            user_id: userId,
+          },
+          createMany: {
+            data: updateMeDto.user_urls.map((url) => {
+              return {
+                name: url.name,
+                url: url.url,
+              };
+            }),
+          },
+        },
+        affiliation: {
+          connect: {
+            id: updateMeDto.affiliation_id,
+          },
+        },
+      },
+    });
+
+    // 希望職種と外部URLを含めたユーザー情報を取得
+    // idしか受け取っていないので、nameはここで取得する
+    const updatedUserWithRelations = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        username: true,
+        enrollment_year: true,
+        graduation_year: true,
+        is_job_hunt_completed: true,
+        self_introduction: true,
+        icon_url: true,
+        show_profile_in_shared_url: true,
+        show_profile_in_public_event: true,
+        affiliation: true,
+        user_jobs: {
+          include: {
+            jobs: true,
+          },
+        },
+        user_urls: true,
+      },
+    });
+
+    const responseDto = new UpdateMeResponseDto();
+
+    responseDto.username = updatedUserWithRelations.username;
+    responseDto.enrollment_year = updatedUserWithRelations.enrollment_year;
+    responseDto.graduation_year = updatedUserWithRelations.graduation_year;
+    responseDto.is_job_hunt_completed =
+      updatedUserWithRelations.is_job_hunt_completed;
+    responseDto.self_introduction = updatedUserWithRelations.self_introduction;
+    responseDto.icon_url = updatedUserWithRelations.icon_url;
+    responseDto.show_profile_in_shared_url =
+      updatedUserWithRelations.show_profile_in_shared_url;
+    responseDto.show_profile_in_public_event =
+      updatedUserWithRelations.show_profile_in_public_event;
+    console.log(updatedUserWithRelations.affiliation);
+    responseDto.affiliation = {
+      id: updatedUserWithRelations.affiliation.id,
+      name: updatedUserWithRelations.affiliation.name,
+    };
+    responseDto.user_jobs = updatedUserWithRelations.user_jobs.map(
+      (userJob) => {
+        return {
+          id: userJob.jobs.id,
+          name: userJob.jobs.name,
+        };
+      },
+    );
+    responseDto.user_urls = updatedUserWithRelations.user_urls.map(
+      (userUrl) => {
+        return {
+          name: userUrl.name,
+          url: userUrl.url,
+        };
+      },
+    );
+
+    return responseDto;
   }
 
   // remove(userId: number) {

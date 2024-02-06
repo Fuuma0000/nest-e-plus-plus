@@ -1,10 +1,11 @@
 import { Controller, Get, Body, Patch, Param, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateMeDto } from './dto/update-me.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetId } from 'src/auth/decorator/get-id.decorator';
 import { GetUserResponseDto } from './dto/get-user-resopnse.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UpdateMeResponseDto } from './dto/update-me-response.dto';
 
 @ApiTags('users') // 必要に応じてタグを追加
 @Controller('users')
@@ -47,8 +48,24 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('me')
-  update(@GetId() userId: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+userId, updateUserDto);
+  @ApiResponse({
+    status: 200,
+    description: '成功時のレスポンス',
+    type: UpdateMeResponseDto,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'ユーザのオプションで非表示の時のエラー',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'ユーザが見つからない時のエラー',
+  })
+  update(
+    @GetId() userId: string,
+    @Body() updateMeDto: UpdateMeDto,
+  ): Promise<UpdateMeResponseDto> {
+    return this.usersService.update(+userId, updateMeDto);
   }
 
   // @UseGuards(JwtAuthGuard)
