@@ -70,6 +70,7 @@ export class UsersService {
         select: {
           events: {
             select: {
+              id: true,
               works: {
                 select: {
                   work_data: {
@@ -114,7 +115,8 @@ export class UsersService {
                 const workData = work.work_data[0]; // 最新の1件を取得
                 if (workData) {
                   return {
-                    id: workData.id,
+                    event_id: events.id,
+                    work_id: workData.id,
                     name: workData.name,
                     catch_copy: workData.catch_copy,
                     thumbnail: workData.work_data_images?.[0]?.url || null,
@@ -207,6 +209,7 @@ export class UsersService {
         select: {
           events: {
             select: {
+              id: true,
               works: {
                 select: {
                   work_data: {
@@ -251,7 +254,8 @@ export class UsersService {
                 const workData = work.work_data[0]; // 最新の1件を取得
                 if (workData) {
                   return {
-                    id: workData.id,
+                    event_id: events.id,
+                    work_id: workData.id,
                     name: workData.name,
                     catch_copy: workData.catch_copy,
                     thumbnail: workData.work_data_images?.[0]?.url || null,

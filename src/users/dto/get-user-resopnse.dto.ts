@@ -71,7 +71,10 @@ export class GetUserResponseDto {
     items: {
       type: 'object',
       properties: {
-        id: {
+        event_id: {
+          type: 'number',
+        },
+        work_id: {
           type: 'number',
         },
         name: {
@@ -87,7 +90,8 @@ export class GetUserResponseDto {
     },
   })
   works: Array<{
-    id: number;
+    event_id: number;
+    work_id: number;
     name: string;
     catch_copy: string;
     thumbnail: string;
