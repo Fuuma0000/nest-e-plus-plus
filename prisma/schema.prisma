@@ -39,6 +39,7 @@ model Event {
   end_at               DateTime? @db.DateTime(0)
   icon_url             String?   @db.VarChar(255)
   description          String?   @db.Text // イベントの説明
+  detail               String?   @db.Text // イベントの詳細
   need_proofreading    Boolean?  @default(false) // イベントに校正が必要かどうか
   is_requires_password Boolean?  @default(false) // イベントにパスワードが必要かどうか
   password             String?   @db.VarChar(255) // イベントに設定されたパスワード
