@@ -8,12 +8,12 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateMeResponseDto } from './dto/update-me-response.dto';
 import { GetMeResponseDto } from './dto/get-me-resopnse.dto';
 
-@ApiTags('users') // 必要に応じてタグを追加
+@ApiTags('users')
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   @ApiResponse({
     status: 200,
@@ -28,7 +28,6 @@ export class UsersController {
     return this.usersService.findOne(+userId);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiResponse({
     status: 200,
@@ -47,7 +46,6 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('me')
   @ApiResponse({
     status: 200,

@@ -16,17 +16,16 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetId } from 'src/auth/decorator/get-id.decorator';
 
 @ApiTags('events')
+@UseGuards(JwtAuthGuard)
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   create(@GetId() userId: string, @Body() createEventDto: CreateEventDto) {
     return this.eventsService.create(+userId, createEventDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.eventsService.findAll();
