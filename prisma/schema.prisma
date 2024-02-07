@@ -171,6 +171,7 @@ model Work_data {
   catch_copy         String  @db.VarChar(100)
   description        String  @db.VarChar(500)
   work_url           String? @db.VarChar(255)
+  thumbnail_url      String? @db.VarChar(255)
   movie_url          String? @db.VarChar(255)
   system_diagram_url String? @db.VarChar(255)
   detail             String? @db.Text

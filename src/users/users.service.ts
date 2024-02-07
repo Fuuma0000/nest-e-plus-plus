@@ -85,16 +85,7 @@ export class UsersService {
                       id: true,
                       name: true,
                       catch_copy: true,
-                      work_data_images: {
-                        // 作品画像
-                        select: {
-                          url: true,
-                          order: true,
-                        },
-                        where: {
-                          order: 1, // 1枚目はサムネイルなので画像のみ取得
-                        },
-                      },
+                      thumbnail_url: true,
                     },
                   },
                 },
@@ -119,7 +110,7 @@ export class UsersService {
                     work_id: workData.id,
                     name: workData.name,
                     catch_copy: workData.catch_copy,
-                    thumbnail: workData.work_data_images?.[0]?.url || null,
+                    thumbnail_url: workData.thumbnail_url,
                   };
                 }
                 return null;
@@ -224,16 +215,7 @@ export class UsersService {
                       id: true,
                       name: true,
                       catch_copy: true,
-                      work_data_images: {
-                        // 作品画像
-                        select: {
-                          url: true,
-                          order: true,
-                        },
-                        where: {
-                          order: 1, // 1枚目はサムネイルなので画像のみ取得
-                        },
-                      },
+                      thumbnail_url: true,
                     },
                   },
                 },
@@ -258,7 +240,7 @@ export class UsersService {
                     work_id: workData.id,
                     name: workData.name,
                     catch_copy: workData.catch_copy,
-                    thumbnail: workData.work_data_images?.[0]?.url || null,
+                    thumbnail_url: workData.thumbnail_url,
                   };
                 }
                 return null;
