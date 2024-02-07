@@ -105,6 +105,7 @@ erDiagram
         catch_copy VARCHAR(100)
         description VARCHAR(500)
         work_url VARCHAR(255)
+        thumbnail_url VARCHAR(255)
         movie_url VARCHAR(255)
         system_diagram_url VARCHAR(255)
         detail TEXT
