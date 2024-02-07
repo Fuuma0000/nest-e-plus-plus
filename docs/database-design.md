@@ -43,6 +43,7 @@ erDiagram
         end_at DATETIME
         icon_url VARCHAR(255)
         description TEXT
+        detail TEXT
         need_proofreading BOOLEAN
         is_requires_password BOOLEAN
         password VARCHAR(255)
