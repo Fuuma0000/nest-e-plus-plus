@@ -32,8 +32,8 @@ export class EventsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.eventsService.findOne(+id);
+  findOne(@Param('id') id: string, @GetId() userId: string) {
+    return this.eventsService.findOne(+id, +userId);
   }
 
   @Patch(':id')

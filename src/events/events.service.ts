@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { PrismaClient } from '@prisma/client';
@@ -37,8 +41,47 @@ export class EventsService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} event`;
+  async findOne(id: number, userId: number) {
+    const event = await this.prisma.event.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        name: true,
+        start_at: true,
+        end_at: true,
+        icon_url: true,
+        description: true,
+        detail: true,
+        need_proofreading: true,
+        is_requires_password: true,
+      },
+    });
+
+    if (!event) {
+      throw new NotFoundException(`イベントが見つかりませんでした`);
+    }
+
+    if (event.is_requires_password) {
+      const isJoined = await this.prisma.event_user_authority.findFirst({
+        where: {
+          user_id: userId,
+          event_id: id,
+        },
+        select: {
+          authority_id: true,
+        },
+      });
+
+      if (!isJoined) {
+        throw new ForbiddenException(
+          `イベントに参加していません。パスワードを入力してください`,
+        );
+      }
+    }
+
+    return event;
   }
 
   update(id: number, updateEventDto: UpdateEventDto) {
