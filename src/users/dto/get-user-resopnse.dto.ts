@@ -83,7 +83,7 @@ export class GetUserResponseDto {
         catch_copy: {
           type: 'string',
         },
-        thumbnail: {
+        thumbnail_url: {
           type: 'string',
         },
       },
@@ -94,6 +94,6 @@ export class GetUserResponseDto {
     work_id: number;
     name: string;
     catch_copy: string;
-    thumbnail: string;
+    thumbnail_url: string;
   }>;
 }
