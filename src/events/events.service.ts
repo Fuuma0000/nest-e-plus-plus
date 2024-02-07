@@ -24,7 +24,17 @@ export class EventsService {
   }
 
   findAll() {
-    return `This action returns all events`;
+    return this.prisma.event.findMany({
+      select: {
+        id: true,
+        name: true,
+        start_at: true,
+        end_at: true,
+        icon_url: true,
+        description: true,
+        is_requires_password: true,
+      },
+    });
   }
 
   findOne(id: number) {

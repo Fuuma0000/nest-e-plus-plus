@@ -26,6 +26,7 @@ export class EventsController {
     return this.eventsService.create(+userId, createEventDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.eventsService.findAll();
