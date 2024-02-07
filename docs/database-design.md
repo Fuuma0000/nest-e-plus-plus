@@ -20,9 +20,6 @@ erDiagram
     technology ||--o{ work_data_technology : ""
     authority ||--o{ event_user_authority : ""
     tool ||--o{ work_data_tool : ""
-    signup_verification ||--o{ user : ""
-    password_reset_verification ||--o{ user : ""
-    email_change_verification ||--o{ user : ""
     work_data ||--o{ work_data_tool : ""
     work ||--o{ work_share_url : ""
 
