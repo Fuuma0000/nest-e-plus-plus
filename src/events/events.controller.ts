@@ -14,6 +14,7 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetId } from 'src/auth/decorator/get-id.decorator';
+import { GetWorkDto } from './dto/get-work.dto';
 
 @ApiTags('events')
 @UseGuards(JwtAuthGuard)
@@ -33,12 +34,23 @@ export class EventsController {
 
   @Get(':id')
   findOne(@Param('id') id: string, @GetId() userId: string) {
-    return this.eventsService.findOne(+id, +userId);
+    const event = this.eventsService.getEvent(+id);
+    this.eventsService.parmissionChack(event, +userId);
+    return event;
+  }
+
+  @Get(':id/works')
+  findWorks(@Param('id') id: string): Promise<GetWorkDto> {
+    return this.eventsService.findWorks(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-    return this.eventsService.update(+id, updateEventDto);
+  update(
+    @Param('id') id: string,
+    @GetId() userId: string,
+    @Body() updateEventDto: UpdateEventDto,
+  ) {
+    return this.eventsService.update(+id, +userId, updateEventDto);
   }
 
   @Delete(':id')
